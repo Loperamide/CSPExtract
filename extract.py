@@ -1,7 +1,7 @@
 import sys
 import sqlite3
 import os
-from os.path import isfile
+from os.path import isfile, join
 
 def control_args():
     if (len(sys.argv) < 2):
@@ -59,13 +59,18 @@ def main():
     # Control args
     control_args()
 
-    files = os.listdir(sys.argv[1])
+    if isfile(sys.argv[1]):
+        print("A file provided as an argument, extracting textures from the file...")
+        filedir=''
+        files = [sys.argv[1]]
+    else:
+        filedir = sys.argv[1]
+        files = [join(filedir,x) for x in os.listdir(filedir)]
+        files = [x for x in files if isfile(x)]
+
     for m_file in files:
         print(m_file)
-        if isfile(sys.argv[1]+"/"+m_file):
-            #extract from sqlite
-            print(m_file)
-            extract_sqlite_layers(sys.argv[1]+"/"+m_file)
+        extract_sqlite_layers(m_file)
 
 if __name__ == "__main__":
    main()
